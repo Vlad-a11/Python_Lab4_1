@@ -21,10 +21,7 @@ class Main(QDialog):
         self.btn_solve.clicked.connect(self.solve)
 
     def fill_random_numbers(self):
-        """
-        Метод для кнопки "Заполнить случайными числами"
-        Случайные числа от 1 до 100
-        """
+
         row = 0
         col = 0
         while row < self.tableWidget.rowCount():
@@ -36,27 +33,46 @@ class Main(QDialog):
             col = 0
 
     def solve(self):
-        """
-        Метод для кнопки "Выполнить задание"
-        """
-        maximum = find_max(self.tableWidget)
-        self.label_max_el.setText("Максимальный элемент :" + maximum.__str__())
 
+        maximum = find_max(self.tableWidget)
+        self.label_max_el.setText("Максимальный элемент :" + str(maximum))
         max_num = maximum[0]
         row_max_number = maximum[1]
         col_max_number = maximum[2]
 
-        number = amount(self.tableWidget)
-        self.label_num.setText("Колличество четных чисел :" + number.__str__())
+        row = 0
+        col = 0
+        f = False
+        l = 0
+        while row < self.tableWidget.rowCount():
+            while col < self.tableWidget.columnCount():
+                number = self.tableTidget.item(row, col).text()
+                if number % 2 == 0:
+                    l += 1
+                    col+=1
+                elif float(number) == maximum[0]:
+                    if  row == 0 and col == 0:
+                        self.tableWidget.setItem(row,col,QTableWidgetItem(str(number)))
+                    else:
+                        self.tableWidget.setItem(row,col,QTableWidgetItem(str(l)))
+                    self.label_num.setText("Колличество четных чисел : " + str(l))
+                    f = True
+                    break
+                else:
+                    self.label_num.setText("Колличество четных чисел : 0")
+                    f = True
+
+                    break
+            if f:
+                break
+            row +=1
+            col = 0
+
+
+
 
 def find_max(table_widget):
-    """
-    Поиск максимума, минимума и суммы в таблице
-    :param table_widget: таблица
-    :return: список с данными: max_num, row_max_number, col_max_number,
-            min_num, row_min_number, col_min_number,
-            sum_table
-    """
+
     row_max_number = 0
     col_max_number = 0
     max_num = float(table_widget.item(row_max_number, col_max_number).text())
@@ -76,27 +92,6 @@ def find_max(table_widget):
 
 
     return [max_num, row_max_number, col_max_number]
-
-def amount(table_widget):
-    m =  find_max(table_widget)
-    row = 0
-    col = 0
-    f =False
-    l=0
-    while row < table_widget.rowCount():
-        if f == False:
-            while col < table_widget.columnCount():
-                number = float(table_widget.item(row, col).text())
-                if number == m:
-                    f = True
-                    break
-                if number%2==0:
-                    l+=1
-        else:
-            break
-        print (l)
-        return l
-
 def main():
     app = QApplication(sys.argv)
     window = Main()
